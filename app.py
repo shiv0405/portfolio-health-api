@@ -1,32 +1,17 @@
 from __future__ import annotations
 
-from flask import Flask, jsonify
-
-from observability import diagnostics_payload, register_observability
-
-
-app = Flask(__name__)
-register_observability(app)
+import sys
+from pathlib import Path
 
 
-@app.get("/")
-def index():
-    return jsonify(
-        {
-            "service": "transparent-api-service",
-            "message": "Transparent backend starter is running.",
-        }
-    )
+SRC = Path(__file__).resolve().parent / "src"
+if str(SRC) not in sys.path:
+    sys.path.insert(0, str(SRC))
+
+from transparent_api_service import create_app
 
 
-@app.get("/health")
-def health() -> tuple[dict[str, str], int]:
-    return diagnostics_payload(), 200
-
-
-@app.get("/healthz")
-def healthcheck() -> tuple[dict[str, str], int]:
-    return diagnostics_payload(), 200
+app = create_app()
 
 
 if __name__ == "__main__":

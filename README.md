@@ -1,14 +1,14 @@
 # transparent-api-service
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
-![Template](https://img.shields.io/badge/Template-Backend-orange)
-![License](https://img.shields.io/badge/License-APACHE-2.0-brightgreen)
+Production-friendly Flask service that exposes customer portfolio health, risk segmentation, and action recommendations through a lightweight JSON API.
 
-Flask-based backend template with observability and transparent automation.
+## Highlights
 
-## Overview
-
-This starter is designed for small backend services, internal APIs, and portfolio-friendly service demos. It includes a Flask application, a smoke test, and transparent automation notes.
+- App factory and package-based service structure
+- Request tracing and response timing headers
+- Sample enterprise account dataset for realistic demos
+- Summary, detail, and recommendation endpoints
+- Test coverage for health, summary, filtering, and account detail behavior
 
 ## Quick Start
 
@@ -20,31 +20,19 @@ flask --app app run --debug
 pytest
 ```
 
-## Included Starter Assets
+## API Endpoints
 
-- `app.py` provides a lightweight Flask service.
-- `observability.py` registers request IDs, response timing headers, and simple structured logs.
-- `tests/test_app.py` validates the root endpoint.
-- `tests/test_health.py` validates health endpoints and request metadata behavior.
-- `requirements.txt` keeps the dependency surface small and readable.
+- `GET /` returns service metadata
+- `GET /health` and `GET /healthz` return diagnostics
+- `GET /v1/accounts/summary` returns portfolio KPIs and segment mix
+- `GET /v1/accounts/high-risk?limit=10&region=Europe` returns prioritized accounts
+- `GET /v1/accounts/<account_id>` returns an account snapshot
+- `GET /v1/accounts/<account_id>/recommendations` returns targeted actions
 
-## Runtime Behavior
+## Data Story
 
-### Observability
-- Each request receives an `X-Request-ID` header.
-- If a caller sends `X-Request-ID`, the service preserves and returns it.
-- Each response includes `X-Response-Time-Ms` for lightweight timing visibility.
-
-### Health Endpoints
-- `GET /health` returns a JSON diagnostics payload for general checks.
-- `GET /healthz` returns the same payload for platform-friendly liveness checks.
+The sample data models B2B software accounts with contract, product adoption, support friction, executive engagement, and renewal risk signals. This makes the service useful for demos around customer success operations, backend API design, and portfolio-quality analytics integration.
 
 ## Automation Disclosure
 
 **Note:** This repository uses automation and AI assistance for planning, initial scaffolding, routine maintenance, and selected code or documentation generation. I review and curate the outputs as part of my portfolio workflow.
-
-## Suggested Additions
-
-### Architecture Notes
-- `docs/architecture.md` explains the service layout, observability approach, and safe extension points.
-- If the service grows, consider an application factory and separate route modules.
