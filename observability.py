@@ -5,7 +5,7 @@ import time
 import uuid
 from typing import Any
 
-from flask import Flask, g, request
+from flask import Flask, g, has_request_context, request
 
 
 LOGGER_NAME = "transparent_api_service"
@@ -56,7 +56,10 @@ def register_observability(app: Flask) -> None:
 
 
 def diagnostics_payload(status: str = "ok") -> dict[str, Any]:
-    return {
-        "status": status,
-        "request_id": getattr(g, "request_id", "unknown"),
-    }
+    payload: dict[str, Any] = {"status": status}
+
+    if has_request_context():
+        payload["request_id"] = getattr(g, "request_id", "unknown")
+        payload["path"] = request.path
+
+    return payload

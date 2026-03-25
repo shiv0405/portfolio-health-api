@@ -17,13 +17,27 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 flask --app app run --debug
+pytest
 ```
 
 ## Included Starter Assets
 
 - `app.py` provides a lightweight Flask service.
+- `observability.py` registers request IDs, response timing headers, and simple structured logs.
 - `tests/test_app.py` validates the root endpoint.
+- `tests/test_health.py` validates health endpoints and request metadata behavior.
 - `requirements.txt` keeps the dependency surface small and readable.
+
+## Runtime Behavior
+
+### Observability
+- Each request receives an `X-Request-ID` header.
+- If a caller sends `X-Request-ID`, the service preserves and returns it.
+- Each response includes `X-Response-Time-Ms` for lightweight timing visibility.
+
+### Health Endpoints
+- `GET /health` returns a JSON diagnostics payload for general checks.
+- `GET /healthz` returns the same payload for platform-friendly liveness checks.
 
 ## Automation Disclosure
 
@@ -31,12 +45,6 @@ flask --app app run --debug
 
 ## Suggested Additions
 
-### Observability
-- `observability.py` adds request-scoped logging helpers, request IDs, and lightweight timing hooks.
-- `app.py` can import these helpers to expose consistent metadata in responses and logs.
-
-### Health and Diagnostics
-- `tests/test_health.py` validates a health-style endpoint and response metadata.
-
 ### Architecture Notes
 - `docs/architecture.md` explains the service layout, observability approach, and safe extension points.
+- If the service grows, consider an application factory and separate route modules.
