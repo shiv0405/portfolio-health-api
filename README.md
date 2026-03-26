@@ -9,6 +9,12 @@ Production-oriented Flask service for portfolio health, renewal risk, and interv
 - Includes observability headers, a machine-readable contract, and operationally useful endpoints
 - Fits naturally into revenue operations, customer success, or renewal-management workflows
 
+## Visual Outputs
+
+![Portfolio health API overview](docs/images/overview.svg)
+
+![Portfolio health API highlights](docs/images/highlights.svg)
+
 ## Core Capabilities
 
 - Portfolio summary view with health, risk, region mix, and contract value
