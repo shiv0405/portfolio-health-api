@@ -1,4 +1,4 @@
-# transparent-api-service
+# Portfolio Health API
 
 Production-friendly Flask service that exposes customer portfolio health, risk segmentation, and action recommendations through a lightweight JSON API.
 
@@ -8,7 +8,7 @@ Production-friendly Flask service that exposes customer portfolio health, risk s
 - Request tracing and response timing headers
 - Sample enterprise account dataset for realistic demos
 - Summary, detail, and recommendation endpoints
-- Test coverage for health, summary, filtering, and account detail behavior
+- Reliable coverage for health, summary, filtering, and account detail behavior
 
 ## Quick Start
 
