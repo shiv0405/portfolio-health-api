@@ -1,13 +1,13 @@
 # Portfolio Health Control API
 
-Production-oriented Flask service for portfolio health, renewal risk, and intervention planning. The project is designed to showcase backend engineering with a strong analytics story: it exposes customer portfolio KPIs, segment-level risk concentrations, ranked action queues, and renewal exposure views through a clean JSON API.
+Production-oriented Flask service for portfolio health, renewal risk, and intervention planning. It exposes customer portfolio KPIs, segment-level risk concentrations, ranked action queues, and renewal exposure views through a clean JSON API.
 
-## Why This Project Works For Senior Roles
+## Overview
 
-- Combines service design with commercial analytics instead of exposing toy CRUD endpoints
-- Models realistic account signals such as adoption, executive engagement, support friction, billing delay, and renewal timing
+- Combines service design with commercial analytics instead of exposing CRUD-only endpoints
+- Models account signals such as adoption, executive engagement, support friction, billing delay, and renewal timing
 - Includes observability headers, a machine-readable contract, and operationally useful endpoints
-- Reads like an internal platform API a revenue operations or customer success engineering team could evolve
+- Fits naturally into revenue operations, customer success, or portfolio review workflows
 
 ## Core Capabilities
 
