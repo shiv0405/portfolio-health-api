@@ -7,7 +7,7 @@ Production-oriented Flask service for portfolio health, renewal risk, and interv
 - Combines service design with commercial analytics instead of exposing CRUD-only endpoints
 - Models account signals such as adoption, executive engagement, support friction, billing delay, and renewal timing
 - Includes observability headers, a machine-readable contract, and operationally useful endpoints
-- Fits naturally into revenue operations, customer success, or portfolio review workflows
+- Fits naturally into revenue operations, customer success, or renewal-management workflows
 
 ## Core Capabilities
 
@@ -49,7 +49,7 @@ python -m pytest -q tests
 
 ## Data Story
 
-The sample portfolio models B2B software accounts with renewal timing, adoption quality, executive sponsorship, support pressure, and billing reliability signals. That makes the service suitable for discussions around customer success engineering, backend API ownership, operational analytics, and intervention design.
+The sample portfolio models B2B software accounts with renewal timing, adoption quality, executive sponsorship, support pressure, and billing reliability signals. That makes the service useful for renewal planning, intervention design, and portfolio monitoring workflows.
 
 ## Production Path
 
