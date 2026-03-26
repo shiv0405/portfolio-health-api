@@ -15,6 +15,10 @@ class AccountService:
     def from_default_data_root(cls) -> "AccountService":
         root = Path(__file__).resolve().parents[3]
         dataset_path = root / "data" / "account_health_snapshot.json"
+        return cls.from_json_path(dataset_path)
+
+    @classmethod
+    def from_json_path(cls, dataset_path: Path) -> "AccountService":
         payload = json.loads(dataset_path.read_text(encoding="utf-8"))
         accounts = [AccountSnapshot(**item) for item in payload]
         return cls(accounts)
@@ -45,12 +49,87 @@ class AccountService:
             "risk_band_mix": risk_counts,
         }
 
+    def segment_summary(self) -> dict[str, object]:
+        rows: list[dict[str, object]] = []
+        for segment in sorted({account.segment for account in self._accounts}):
+            matching = [account for account in self._accounts if account.segment == segment]
+            rows.append(
+                {
+                    "segment": segment,
+                    "accounts": len(matching),
+                    "average_health_score": round(sum(account.health_score for account in matching) / len(matching), 2),
+                    "average_churn_risk": round(sum(account.churn_risk for account in matching) / len(matching), 4),
+                    "contract_value_usd": int(sum(account.contract_value for account in matching)),
+                    "critical_accounts": int(sum(1 for account in matching if risk_band(account.churn_risk) == "critical")),
+                }
+            )
+        rows.sort(key=lambda item: (item["average_churn_risk"], item["contract_value_usd"]), reverse=True)
+        return {"segments": rows}
+
     def high_risk_accounts(self, limit: int = 10, region: str | None = None) -> list[dict[str, object]]:
         accounts = self._accounts
         if region:
             accounts = [account for account in accounts if account.region.lower() == region.lower()]
         ranked = sorted(accounts, key=lambda account: (account.churn_risk, -account.contract_value), reverse=True)
         return [account.to_dict() for account in ranked[:limit]]
+
+    def renewal_forecast(self, horizon_days: int = 120) -> dict[str, object]:
+        in_window = [account for account in self._accounts if account.renewal_window_days <= horizon_days]
+        rows = [
+            {
+                "account_id": account.account_id,
+                "account_name": account.account_name,
+                "region": account.region,
+                "segment": account.segment,
+                "renewal_window_days": account.renewal_window_days,
+                "contract_value": account.contract_value,
+                "churn_risk": account.churn_risk,
+                "risk_band": risk_band(account.churn_risk),
+            }
+            for account in sorted(
+                in_window,
+                key=lambda account: (account.renewal_window_days, -account.churn_risk, -account.contract_value),
+            )
+        ]
+        forecast_value = int(sum(account.contract_value for account in in_window))
+        value_at_risk = int(sum(account.contract_value for account in in_window if account.churn_risk >= 0.55))
+        return {
+            "horizon_days": horizon_days,
+            "accounts_in_window": len(in_window),
+            "renewal_value_usd": forecast_value,
+            "value_at_risk_usd": value_at_risk,
+            "accounts": rows,
+        }
+
+    def action_queue(self, limit: int = 15, region: str | None = None) -> dict[str, object]:
+        accounts = self._accounts
+        if region:
+            accounts = [account for account in accounts if account.region.lower() == region.lower()]
+
+        queue = []
+        for account in sorted(accounts, key=lambda item: (item.churn_risk, item.contract_value), reverse=True):
+            recommended_actions = self.recommendations(account.account_id)
+            if recommended_actions is None:
+                continue
+            queue.append(
+                {
+                    "account_id": account.account_id,
+                    "account_name": account.account_name,
+                    "region": account.region,
+                    "segment": account.segment,
+                    "renewal_window_days": account.renewal_window_days,
+                    "contract_value": account.contract_value,
+                    "health_score": account.health_score,
+                    "churn_risk": account.churn_risk,
+                    "risk_band": risk_band(account.churn_risk),
+                    "priority": self._priority_label(account),
+                    "recommended_actions": recommended_actions["recommended_actions"],
+                }
+            )
+        return {
+            "generated_items": len(queue),
+            "items": queue[:limit],
+        }
 
     def get_account(self, account_id: str) -> dict[str, object] | None:
         account = self._account_map.get(account_id)
@@ -79,3 +158,10 @@ class AccountService:
             "risk_band": risk_band(account.churn_risk),
             "recommended_actions": actions,
         }
+
+    def _priority_label(self, account: AccountSnapshot) -> str:
+        if account.churn_risk >= 0.78 or account.renewal_window_days <= 30:
+            return "immediate"
+        if account.churn_risk >= 0.55 or account.renewal_window_days <= 60:
+            return "near_term"
+        return "monitor"
