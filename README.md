@@ -57,7 +57,3 @@ The sample portfolio models B2B software accounts with renewal timing, adoption 
 - add authentication, request budgets, and formal service-level objectives
 - wire the action queue into CRM, support, or account-management workflows
 - publish the OpenAPI contract and version the service as part of a platform catalog
-
-## Automation Disclosure
-
-**Note:** This repository uses automation and AI assistance for planning, initial scaffolding, routine maintenance, and selected code or documentation generation. I review and curate the outputs as part of my portfolio workflow.
