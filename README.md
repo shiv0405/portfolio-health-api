@@ -2,20 +2,20 @@
 
 Production-oriented Flask service for portfolio health, renewal risk, and intervention planning. It exposes customer portfolio KPIs, segment-level risk concentrations, ranked action queues, and renewal exposure views through a clean JSON API.
 
-## Overview
+## Service Summary
 
 - Combines service design with commercial analytics instead of exposing CRUD-only endpoints
 - Models account signals such as adoption, executive engagement, support friction, billing delay, and renewal timing
 - Includes observability headers, a machine-readable contract, and operationally useful endpoints
 - Fits naturally into revenue operations, customer success, or renewal-management workflows
 
-## Visual Outputs
+## Service Snapshot
 
 ![Portfolio health API overview](docs/images/overview.svg)
 
 ![Portfolio health API highlights](docs/images/highlights.svg)
 
-## Core Capabilities
+## Endpoint Behavior
 
 - Portfolio summary view with health, risk, region mix, and contract value
 - Segment risk summary for leadership planning
@@ -24,7 +24,7 @@ Production-oriented Flask service for portfolio health, renewal risk, and interv
 - Renewal forecast endpoint for exposure review inside a configurable horizon
 - JSON error responses and request tracing headers for cleaner integration behavior
 
-## Project Layout
+## Code Organization
 
 - `src/transparent_api_service/` contains the app factory, route layer, settings, and domain logic
 - `data/account_health_snapshot.json` contains the sample enterprise portfolio
@@ -53,11 +53,11 @@ python -m pytest -q tests
 - `GET /v1/accounts/<account_id>`
 - `GET /v1/accounts/<account_id>/recommendations`
 
-## Data Story
+## Portfolio Model
 
 The sample portfolio models B2B software accounts with renewal timing, adoption quality, executive sponsorship, support pressure, and billing reliability signals. That makes the service useful for renewal planning, intervention design, and portfolio monitoring workflows.
 
-## Production Path
+## Deployment Notes
 
 - move the JSON source into a warehouse or service-owned data store
 - add authentication, request budgets, and formal service-level objectives
